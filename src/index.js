@@ -11,14 +11,15 @@ const argv = require("minimist")(process.argv.slice(2), {
 });
 
 const inputPath = argv._[0];
-const dimensions = imageSize(inputPath);
 
+let dimensions;
 let targetWidth = parseInt(argv.w);
 let targetHeight = parseInt(argv.h);
 let targetX = parseInt(argv.x);
 let targetY = parseInt(argv.y);
 
 if (fs.existsSync(inputPath) && (targetWidth && targetHeight) || (targetX && targetY)) {
+    dimensions = imageSize(inputPath);
     if (targetWidth) {
         targetX = Math.ceil(targetWidth / dimensions.width);
         targetY = Math.ceil(targetHeight / dimensions.height);
