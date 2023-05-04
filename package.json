@@ -1,0 +1,24 @@
+{
+  "name": "tile-image",
+  "version": "1.0.0",
+  "description": "",
+  "bin": "src/index.js",
+  "scripts": {
+    "build": "pkg ."
+  },
+  "pkg": {
+    "assets": "node_modules",
+    "outputPath": "dist"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.11.2",
+    "image-size": "^1.0.2",
+    "jimp-compact": "^0.16.1-2",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.1"
+  }
+}
