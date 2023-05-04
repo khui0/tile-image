@@ -6,40 +6,58 @@ const imageSize = require("image-size");
 const argv = require("minimist")(process.argv.slice(2), {
     alias: {
         w: "width",
-        h: "height"
-    }
+        h: "height",
+    },
 });
 
-// If the path exists, and a numeric width and height are provided
-if (fs.existsSync(argv._[0]) && parseInt(argv.w) && parseInt(argv.h)) {
-    generateImage(argv._[0], argv.w, argv.h);
+const inputPath = argv._[0];
+const dimensions = imageSize(inputPath);
+
+let targetWidth = parseInt(argv.w);
+let targetHeight = parseInt(argv.h);
+let targetX = parseInt(argv.x);
+let targetY = parseInt(argv.y);
+
+if (fs.existsSync(inputPath) && (targetWidth && targetHeight) || (targetX && targetY)) {
+    if (targetWidth) {
+        targetX = Math.ceil(targetWidth / dimensions.width);
+        targetY = Math.ceil(targetHeight / dimensions.height);
+    }
+    else if (targetX) {
+        targetWidth = targetX * dimensions.width;
+        targetHeight = targetY * dimensions.height;
+    }
+    generateImage();
 }
 else {
-    console.log("Missing or invalid arguments");
+    console.log("Missing arguments");
 }
 
-function generateImage(inputPath, w, h) {
+function generateImage() {
     try {
-        const canvas = createCanvas(w, h);
+        const canvas = createCanvas(targetWidth, targetHeight);
         const ctx = canvas.getContext("2d");
-        const dimensions = imageSize(inputPath);
+
         loadImage(inputPath).then(data => {
-            let xAmount = Math.ceil(w, dimensions.width);
-            let yAmount = Math.ceil(h, dimensions.height);
-            for (let y = 0; y < yAmount; y++) {
-                for (let x = 0; x < xAmount; x++) {
-                    let xPosition = x * dimensions.width;
-                    let yPosition = y * dimensions.height;
-                    ctx.drawImage(data, xPosition, yPosition, dimensions.width, dimensions.height);
+            for (let y = 0; y < targetY; y++) {
+                for (let x = 0; x < targetX; x++) {
+                    ctx.drawImage(
+                        data,
+                        x * dimensions.width,
+                        y * dimensions.height,
+                        dimensions.width,
+                        dimensions.height
+                    );
                 }
             }
-            // Write canvas to file
-            let outputPath = path.join(path.dirname(inputPath), `tiled-${path.parse(inputPath).name}-${w}-${h}.png`);
+
+            // Write to file
+            let outputPath = path.join(path.dirname(inputPath), `tile-${path.parse(inputPath).name}-${targetWidth}-${targetHeight}.png`);
             fs.writeFileSync(outputPath, canvas.toBuffer("image/png"));
-            console.log(`Tiled image generated at ${outputPath}`);
+            console.log(`Image generated at ${outputPath}`);
         });
     }
     catch (e) {
-        console.log("An error occurred while trying to process the image");
+        console.log("Unable to process image");
     }
 }

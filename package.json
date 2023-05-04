@@ -15,7 +15,6 @@
   "dependencies": {
     "canvas": "^2.11.2",
     "image-size": "^1.0.2",
-    "jimp-compact": "^0.16.1-2",
     "minimist": "^1.2.8"
   },
   "devDependencies": {
