@@ -52,7 +52,7 @@ function generateImage() {
             }
 
             // Write to file
-            let outputPath = path.join(path.dirname(inputPath), `tile-${path.parse(inputPath).name}-${targetWidth}-${targetHeight}.png`);
+            let outputPath = path.join(path.dirname(inputPath), `tile-${path.parse(inputPath).name}-${targetWidth}x${targetHeight}.png`);
             fs.writeFileSync(outputPath, canvas.toBuffer("image/png"));
             console.log(`Image generated at ${outputPath}`);
         });
